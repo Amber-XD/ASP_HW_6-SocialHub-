@@ -1,0 +1,30 @@
+﻿
+@model SocialHub.Models.Post
+
+@{
+    ViewData["Title"] = "Видалити пост";
+}
+
+<h1>Видалити пост?</h1>
+
+<p>Ти впевнений, що хочеш видалити цей пост?</p>
+
+<div class="card mb-3">
+    <div class="card-body">
+        <h3>@Model.Title</h3>
+        <p>@Model.Text</p>
+        <p>Автор: @Model.Author</p>
+    </div>
+</div>
+
+<form asp-action="Delete" method="post">
+    <input type="hidden" name="id" value="@Model.Id" />
+
+    <button type="submit" class="btn btn-danger">
+        Так, видалити
+    </button>
+
+    <a asp-action="Index" class="btn btn-secondary">
+        Скасувати
+    </a>
+</form>

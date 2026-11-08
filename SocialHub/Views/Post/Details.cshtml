@@ -1,0 +1,85 @@
+﻿@model SocialHub.Models.Post
+
+@{
+	ViewData["Title"] = "Перегляд поста";
+}
+
+<h1>@Model.Title</h1>
+
+<p>@Model.Text</p>
+
+<p>
+	Автор: @Model.Author
+	<br />
+	Дата: @Model.CreatedAt.ToString("dd.MM.yyyy HH:mm")
+
+</p>
+
+<hr />
+
+<h2>Коментарі</h2>
+
+@if (Model.Comments != null && Model.Comments.Any())
+{
+	@foreach (var comment in Model.Comments)
+	{
+		<div class="card mb-2">
+			<div class="card-body">
+				<strong>@comment.Author</strong>
+				<p>@comment.Text</p>
+				<small>
+					@comment.CreatedAt.ToString("dd.MM.yyyy HH:mm")
+				</small>
+				@if (User.Identity != null && User.Identity.IsAuthenticated &&
+    (User.Identity.Name == comment.Author || User.IsInRole("Admin")))
+{
+    <form asp-controller="Comment" asp-action="Delete" method="post">
+        <input type="hidden" name="id" value="@comment.Id" />
+        <input type="hidden" name="postId" value="@Model.Id" />
+
+        <button type="submit" class="btn btn-danger btn-sm">
+            Видалити
+        </button>
+    </form>
+}
+			</div>
+		</div>
+
+	}
+}
+else
+{
+	<p>Поки що коментарів немає.</p>
+}
+@if (User.Identity != null && User.Identity.IsAuthenticated &&
+    (User.Identity.Name == Model.Author || User.IsInRole("Admin")))
+{
+    <a asp-action="Edit"
+       asp-route-id="@Model.Id"
+       class="btn btn-warning">
+        Редагувати пост
+    </a>
+}
+@if (User.Identity != null && User.Identity.IsAuthenticated)
+{
+    <a asp-controller="Comment"
+       asp-action="Create"
+       asp-route-postId="@Model.Id"
+       class="btn btn-success">
+        Додати коментар
+    </a>
+}
+else
+{
+    <button type="button"
+            class="btn btn-success"
+            data-bs-toggle="modal"
+            data-bs-target="#authModal">
+        Додати коментар
+    </button>
+}
+
+
+<a asp-action="Index" class="btn btn-secondary">
+	Назад до постів
+</a>
